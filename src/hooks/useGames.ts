@@ -1,6 +1,7 @@
 import axios, { CanceledError } from "axios";
 import { useState, useEffect } from "react";
 import { baseURL, apikey } from "../services/api";
+import { Genre } from "./useGenres";
 
 export interface Platform {
     id: number
@@ -20,7 +21,7 @@ interface GamesResponseModel {
     results: Game[]
 }
 
-export const useGames = () => {
+export const useGames = (selectedGenre: Genre | null) => {
     const [games, setGames] = useState<Game[]>([])
     const [isLoading, setLoading] = useState(false)
     const controller = new AbortController()
@@ -28,9 +29,11 @@ export const useGames = () => {
     const getGames = async () => {
         try {
             setLoading(true)
-            const response = await axios.get<GamesResponseModel>(baseURL + "/games?key=" + apikey, {
-                signal: controller.signal
-            })
+            const response = await axios.get<GamesResponseModel>(baseURL + "/games?key=" + apikey,
+                {
+                    params: { genres: selectedGenre?.id }
+                    // signal: controller.signal
+                })
             console.log(response.data);
             setGames(response.data.results)
             setLoading(false)
@@ -43,8 +46,8 @@ export const useGames = () => {
 
     useEffect(() => {
         getGames()
-        return () => controller.abort()
-    }, []);
+        // return () => controller.abort()
+    }, [selectedGenre?.id]);
 
     return { games, isLoading }
 

@@ -12,8 +12,8 @@ export const GameCard = ({ game }: Props) => {
     return (
         <Card borderRadius={10} overflow={'hidden'}>
             <Image src={game.background_image} />
-            <CardBody>
-                <Heading fontSize={'2xl'}>{game.name}</Heading>
+            <CardBody height={'20px'}>
+                <Heading fontSize={'16px'}>{game.name}</Heading>
                 <HStack justifyContent={'space-between'}>
 
                     <PlatformIconList platforms={game.parent_platforms.map((e) => e.platform)} />
