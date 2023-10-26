@@ -15,7 +15,7 @@ interface GenresResponseModel {
 export const useGenres = () => {
     const [genres, setGenres] = useState<Genre[]>([])
     const [isLoading, setLoading] = useState(false)
-    const controller = new AbortController()
+    //const controller = new AbortController()
 
     const getGenres = async () => {
         try {
@@ -23,7 +23,7 @@ export const useGenres = () => {
             const response = await axios.get<GenresResponseModel>(baseURL + "/genres?key=" + apikey, {
                 // signal: controller.signal
             })
-            console.log(response.data);
+
             setGenres(response.data.results)
             setLoading(false)
         } catch (error) {
@@ -39,6 +39,4 @@ export const useGenres = () => {
     }, []);
 
     return { genres, isLoading }
-
-
 }
