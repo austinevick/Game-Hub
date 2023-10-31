@@ -21,20 +21,29 @@ interface GamesResponseModel {
     count: number,
     results: Game[]
 }
+export type useGamesProps = {
+    selectedGenre: Genre | null
+    selectedPlatform: PlatformList | null
+    sortOrder: string
+    searchValue: string
+}
 
-export const useGames = (selectedGenre: Genre | null, selectedPlatform: PlatformList | null) => {
+export const useGames = ({ selectedGenre, selectedPlatform, sortOrder, searchValue }: useGamesProps) => {
     const [games, setGames] = useState<Game[]>([])
     const [isLoading, setLoading] = useState(false)
-
 
     const getGames = async () => {
         try {
             setLoading(true)
             const response = await axios.get<GamesResponseModel>(baseURL + "/games?key=" + apikey,
                 {
-                    params: { genres: selectedGenre?.id, platforms: selectedPlatform?.id }
+                    params: {
+                        genres: selectedGenre?.id,
+                        platforms: selectedPlatform?.id,
+                        ordering: sortOrder,
+                        search: searchValue
+                    }
                 })
-
             setGames(response.data.results)
             setLoading(false)
         } catch (error) {
@@ -47,7 +56,7 @@ export const useGames = (selectedGenre: Genre | null, selectedPlatform: Platform
     useEffect(() => {
         getGames()
 
-    }, [selectedGenre?.id, selectedPlatform?.id]);
+    }, [selectedGenre?.id, selectedPlatform?.id, sortOrder, searchValue]);
 
     return { games, isLoading }
 
